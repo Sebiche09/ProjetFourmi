@@ -38,14 +38,14 @@ while running:
     queen.draw(window)
     queen.update()
     larvae_to_remove = []
-    for larva_key, (larva, value) in larva_dict.items():
+    for larva_key, (larva, value,x,y) in larva_dict.items():
         larvae_to_remove = larva.update()
         larva.draw(window)
     for larva_key in larvae_to_remove:
         larva.spawn_ant()
-
         del larva_dict[larva_key]
-
+    for ant_key, (ant, value) in ant_dict.items() :
+        ant.draw(window)
 
 
     #-------------------------------------------- Gestion du temps --------------------------------------------

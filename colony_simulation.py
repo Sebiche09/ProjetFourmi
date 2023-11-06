@@ -2,6 +2,7 @@ import pygame
 import random
 counter_larva = 0
 counter_ant = 0
+compteur = 0
 larva_dict = dict()
 classes = ['Worker', 'Soldier', 'Explorer', 'Male', 'ChildcareWorker', 'Farmer', 'Slaver']
 ant_dict = dict()
@@ -44,7 +45,7 @@ class Queen(Ant):
 
             # Vérifier s'il y a une collision avec une larve existante
             collides = False
-            for key, (existing_larva, value) in larva_dict.items():
+            for key, (existing_larva, value, x,y) in larva_dict.items():
                 if existing_larva.rect.colliderect(new_x, new_y, larva_width, larva_height):
                     collides = True
                     break
@@ -54,7 +55,7 @@ class Queen(Ant):
                 larva = Larva(self.nest, larva_image, larva_width, larva_height)
                 larva.rect.topleft = (new_x, new_y)
                 larva_key = f'larve{counter_larva}'
-                larva_dict[larva_key] = (larva, 1000)
+                larva_dict[larva_key] = (larva, 1000, new_x, new_y)
                 counter_larva += 1
                 break
 
@@ -73,23 +74,25 @@ class Larva(Ant):
 
     def update(self):
         larvae_to_remove = []  # Liste pour stocker les clés des larves à supprimer
-        for larva_key, (larva, value) in list(larva_dict.items()):
+        for larva_key, (larva, value, x,y) in list(larva_dict.items()):
             if value == 0:
                 larvae_to_remove.append(larva_key)  # Ajouter la clé à la liste des larves à supprimer
             else:
                 value -= 1
-                larva_dict[larva_key] = (larva, value)
+                larva_dict[larva_key] = (larva, value,x,y)
         return larvae_to_remove
     def spawn_ant(self):
+        global compteur
         global counter_ant
         selected_class_name = random.choice(classes)
         selected_class = eval(selected_class_name)
         image = pygame.image.load(f"{selected_class_name.lower()}.png")
-        ant_width, ant_height = 15, 30
+        ant_width, ant_height =20, 40
 
         # Générer de nouvelles coordonnées pour la fourmi
-        new_x = self.nest.x + random.randint(5, 695)
-        new_y = self.nest.y + random.randint(5, 595)
+        new_x = (larva_dict['larve'+str(compteur)][2])-10
+        new_y = larva_dict['larve'+str(compteur)][3]-20
+        compteur +=1
         ant = selected_class(self.nest, image, ant_width, ant_height)
         ant.rect.topleft = (new_x, new_y)
         ant_key = f'ant{counter_ant}'
