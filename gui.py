@@ -1,7 +1,7 @@
 import pygame
 import random
 import sys
-from colony_simulation import Queen, Nest, Food, ColonySimulation, Larva, larva_list
+from colony_simulation import Queen, Nest, Food, ColonySimulation, larva_dict, classes, Worker, Soldier, Explorer, Male, ChildcareWorker, Farmer, Slaver, ant_dict
 
 # Initialisation de Pygame
 pygame.init()
@@ -37,9 +37,16 @@ while running:
     simulation.draw(window)
     queen.draw(window)
     queen.update()
-    for larva in larva_list:
-        larva.update()
+    larvae_to_remove = []
+    for larva_key, (larva, value) in larva_dict.items():
+        larvae_to_remove = larva.update()
         larva.draw(window)
+    for larva_key in larvae_to_remove:
+        larva.spawn_ant()
+
+        del larva_dict[larva_key]
+
+
 
     #-------------------------------------------- Gestion du temps --------------------------------------------
     # Obtenez le temps écoulé en secondes
@@ -47,7 +54,7 @@ while running:
     # Dessinez le temps en haut à droite
     font = pygame.font.Font(None, 36)
     timer_text = font.render(f"Temps : {elapsed_time} secondes", True, (0, 0, 0))
-    larva_text = font.render(str(larva_list), True, (0,0,0))
+    larva_text = font.render(str(larva_dict), True, (0,0,0))
     text_rect = timer_text.get_rect()
     text_larva_rect = timer_text.get_rect()
     text_rect.topright = (WINDOW_WIDTH - 10, 10)
