@@ -1,15 +1,18 @@
 import pygame
 import random
 import sys
-from colony_simulation import Queen, Nest, Food, ColonySimulation, larva_dict, classes, Worker, Soldier, Explorer, Male, ChildcareWorker, Farmer, Slaver, ant_dict
+from colony_simulation import Queen, Nest, ColonySimulation, larva_dict, classes, Worker, Soldier, Explorer, Male, ChildcareWorker, Farmer, Slaver, ant_dict
 
 # Initialisation de Pygame
 pygame.init()
 # ----------------------------------------- Paramètres de la fenêtre ------------------------------------------
-WINDOW_WIDTH, WINDOW_HEIGHT = 1000, 600
+screen_info = pygame.display.Info()
+WINDOW_WIDTH, WINDOW_HEIGHT = screen_info.current_w, screen_info.current_h
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 background_color = (255, 255, 255)  # Blanc
 pygame.display.set_caption("Simulation de colonie de fourmis")
+button_color = (0, 128, 0)
+button_rect = pygame.Rect((WINDOW_WIDTH//2)-50, WINDOW_HEIGHT-50, 100, 50)
 #--------------------------------------------------------------------------------------------------------------
 
 # Instanciez la classe Nest pour créer le nid
@@ -20,13 +23,15 @@ simulation = ColonySimulation(nest, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 100)
 queen_image = pygame.image.load("queen.png")
 queen = Queen(nest, queen_image, 30, 60)  # Où "queen.png" est le chemin de l'image de la reine
 
-
 # ----------------------------------------- Boucle principale de jeu ------------------------------------------
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if button_rect.collidepoint(event.pos):
+                running = False
     # Effacez l'écran avec la couleur d'arrière-plan
     window.fill(background_color)
     # Dessinez le carré représentant la colonie (Nest)
@@ -48,6 +53,7 @@ while running:
         ant.draw(window)
 
 
+
     #-------------------------------------------- Gestion du temps --------------------------------------------
     # Obtenez le temps écoulé en secondes
     elapsed_time = pygame.time.get_ticks() // 1000
@@ -58,11 +64,17 @@ while running:
     text_rect = timer_text.get_rect()
     text_larva_rect = timer_text.get_rect()
     text_rect.topright = (WINDOW_WIDTH - 10, 10)
-    text_larva_rect.topleft = (WINDOW_WIDTH - 990, 550)
+    text_larva_rect.topleft = (10, 10)
     window.blit(timer_text, text_rect)
     window.blit(larva_text,text_larva_rect)
 
-    #----------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------Boutons--------------------------------------------------
+    pygame.draw.rect(window, button_color, button_rect)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Arrêter", True, (255, 255, 255))
+    text_rect = text.get_rect(center=button_rect.center)
+    window.blit(text, text_rect)
+    # ----------------------------------------------------------------------------------------------------------
 
     pygame.display.flip()
 #--------------------------------------------------------------------------------------------------------------

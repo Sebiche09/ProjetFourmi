@@ -1,9 +1,11 @@
 import pygame
 import random
+counter_food = 0
 counter_larva = 0
 counter_ant = 0
 compteur = 0
 larva_dict = dict()
+food_dict = dict()
 classes = ['Worker', 'Soldier', 'Explorer', 'Male', 'ChildcareWorker', 'Farmer', 'Slaver']
 ant_dict = dict()
 class Ant:
@@ -36,17 +38,19 @@ class Queen(Ant):
     def spawn_larva(self):
         global counter_larva
         larva_image = pygame.image.load("larva.png")
-        larva_width, larva_height = 5, 5
+        larva_width, larva_height = 7, 7
 
         while True:
             # Générer de nouvelles coordonnées pour la larve
-            new_x = self.nest.x + random.randint(335, 365)
-            new_y = self.nest.y + random.randint(280, 320)
+            new_x = random.randint(((self.nest.width + 300) // 2) - 60, ((self.nest.width + 300) // 2) + 60)
+            new_y = random.randint(((self.nest.height + 300) // 2) - 60, ((self.nest.height + 300) // 2) + 60)
 
             # Vérifier s'il y a une collision avec une larve existante
             collides = False
-            for key, (existing_larva, value, x,y) in larva_dict.items():
-                if existing_larva.rect.colliderect(new_x, new_y, larva_width, larva_height):
+            new_larva_rect = pygame.Rect(new_x, new_y, larva_width, larva_height)
+            for larva_key, (existing_larva, _, x, y) in larva_dict.items():
+                existing_larva_rect = pygame.Rect(x, y, larva_width, larva_height)
+                if existing_larva_rect.colliderect(new_larva_rect):
                     collides = True
                     break
 
@@ -58,7 +62,6 @@ class Queen(Ant):
                 larva_dict[larva_key] = (larva, 1000, new_x, new_y)
                 counter_larva += 1
                 break
-
 
 class Larva(Ant):
     def __init__(self, nest, larva_image, width, height):
@@ -84,7 +87,10 @@ class Larva(Ant):
     def spawn_ant(self):
         global compteur
         global counter_ant
-        selected_class_name = random.choice(classes)
+        if compteur == 0:
+            selected_class_name = 'ChildcareWorker'
+        else :
+            selected_class_name = random.choice(classes)
         selected_class = eval(selected_class_name)
         image = pygame.image.load(f"{selected_class_name.lower()}.png")
         ant_width, ant_height =20, 40
@@ -192,12 +198,6 @@ class Nest:
         self.height = height
         # Autres attributs du nid, comme la quantité de nourriture, le nombre d'œufs, etc.
 
-class Food:
-    def __init__(self, x, y):
-        # Position de la nourriture
-        self.x = x
-        self.y = y
-        # Autres attributs de la nourriture, comme la quantité, le type, etc.
 
 class ColonySimulation:
     def __init__(self, nest, width, height):
