@@ -15,7 +15,15 @@ class Ant:
         # Propriétés communes à toutes les fourmis
         self.position = (x, y)
         self.state = "idle"  # État initial
+        self.move_interval = 500  # Interval de spawn en secondes (ajustez selon vos besoins)
+        self.move_timer = self.move_interval
         # Autres propriétés communes
+    def update(self):
+        """
+        POST: - Permet après X secondes, lancer la fonction spawn_larva()
+        """
+        self.move_timer -= 1
+
 
 class Queen():
     def __init__(self, nest):
@@ -25,7 +33,6 @@ class Queen():
         self.rect = self.image.get_rect()
         self.position = (nest.x + nest.width // 2, nest.y + nest.height // 2) #position de la reine (fixe)
         self.rect.center = self.position
-
 # ----------------------------------------- Attribut spawn larve ------------------------------------------
         self.spawn_interval = 500  # Interval de spawn en secondes (ajustez selon vos besoins)
         self.spawn_timer = self.spawn_interval
@@ -43,8 +50,6 @@ class Queen():
         window.blit(self.image, self.rect)
     def spawn_larva(self):
         global counter_larva
-        larva_image = pygame.image.load("larva.png")
-        larva_width, larva_height = 7, 7
         while True:
             # Générer de nouvelles coordonnées pour la larve
             new_x = random.randint(((self.nest.width + 300) // 2) - 60, ((self.nest.width + 300) // 2) + 60)
@@ -52,27 +57,26 @@ class Queen():
 
             # Vérifier s'il y a une collision avec une larve existante
             collides = False
-            new_larva_rect = pygame.Rect(new_x, new_y, larva_width, larva_height)
+            new_larva_rect = pygame.Rect(new_x, new_y, 7, 7)
             for larva_key, (existing_larva, _, x, y) in larva_dict.items():
-                existing_larva_rect = pygame.Rect(x, y, larva_width, larva_height)
+                existing_larva_rect = pygame.Rect(x, y, 7, 7)
                 if existing_larva_rect.colliderect(new_larva_rect):
                     collides = True
                     break
-
             # Si aucune collision n'a été trouvée, ajouter la nouvelle larve au dictionnaire
             if not collides:
-                larva = Larva(self.nest, larva_image, larva_width, larva_height)
+                larva = Larva(self.nest)
                 larva.rect.topleft = (new_x, new_y)
                 larva_key = f'larve{counter_larva}'
                 larva_dict[larva_key] = (larva, 1000, new_x, new_y)
                 counter_larva += 1
                 break
 
-class Larva(Ant):
-    def __init__(self, nest, larva_image, width, height):
-        super().__init__(nest.x + random.randint(325,375), nest.y + random.randint(275,300))
+class Larva():
+    def __init__(self, nest):
+        self.position = (nest.x + random.randint(325,375), nest.y + random.randint(275,300))
         self.role = "larva"
-        self.image = pygame.transform.scale(larva_image, (width, height))
+        self.image = pygame.transform.scale(pygame.image.load("larva.png"), (7, 7))
         self.rect = self.image.get_rect()
         self.rect.center = self.position
         self.nest = nest
@@ -107,11 +111,12 @@ class Larva(Ant):
         ant = selected_class(self.nest, image, ant_width, ant_height)
         ant.rect.topleft = (new_x, new_y)
         ant_key = f'ant{counter_ant}'
-        ant_dict[ant_key] = (ant, 10000)
+        ant_dict[ant_key] = (ant, 10000,new_x,new_y)
         counter_ant += 1
 
 class Worker(Ant):
     def __init__(self, nest, worker_image, width, height):
+        super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
         self.role = "worker"
         self.image = pygame.transform.scale(worker_image, (width, height))  # Image de la reine
         self.rect = self.image.get_rect()

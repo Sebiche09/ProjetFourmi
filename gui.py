@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 from colony_simulation import Nest, ColonySimulation
-from Ant import Queen, larva_dict,classes,Worker,Soldier,Explorer,Male,ChildcareWorker,Farmer,Slaver,ant_dict
+from Ant import Queen, larva_dict,classes,Worker,Soldier,Explorer,Male,ChildcareWorker,Farmer,Slaver,ant_dict, Ant
 # Initialisation de Pygame
 pygame.init()
 # ----------------------------------------- Paramètres de la fenêtre ------------------------------------------
@@ -21,7 +21,6 @@ simulation = ColonySimulation(nest, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 100)
 
 
 queen = Queen(nest)  # Où "queen.png" est le chemin de l'image de la reine
-
 # ----------------------------------------- Boucle principale de jeu ------------------------------------------
 running = True
 while running:
@@ -48,8 +47,20 @@ while running:
     for larva_key in larvae_to_remove:
         larva.spawn_ant()
         del larva_dict[larva_key]
-    for ant_key, (ant, value) in ant_dict.items() :
+
+    for ant_key, (ant, value,new_x,new_y) in ant_dict.items() :
+        print(ant.move_timer)
+        x = new_x + random.randint(-10,10)
+        y = new_y + random.randint(-10, 10)
+        if x < nest.x+20 or x > nest.x+nest.width-20:
+            x = new_x
+        if y < nest.y+20 or y > nest.y+nest.height-20:
+            y = new_y
+        ant.rect.topleft = (x, y)
+        ant_dict[ant_key] = (ant,value,x,y)
         ant.draw(window)
+
+
 
 
 
