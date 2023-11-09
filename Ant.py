@@ -1,6 +1,5 @@
 import pygame
 import random
-
 counter_food = 0
 counter_larva = 0
 counter_ant = 0
@@ -10,12 +9,12 @@ food_dict = dict()
 classes = ['Worker', 'Soldier', 'Explorer', 'Male', 'ChildcareWorker', 'Farmer', 'Slaver']
 ant_dict = dict()
 
-class Ant:
+class Ant():
     def __init__(self, x, y):
         # Propriétés communes à toutes les fourmis
         self.position = (x, y)
         self.state = "idle"  # État initial
-        self.move_interval = 500  # Interval de spawn en secondes (ajustez selon vos besoins)
+        self.move_interval = 500
         self.move_timer = self.move_interval
         # Autres propriétés communes
     def update(self):
@@ -26,7 +25,7 @@ class Ant:
 
 
 class Queen():
-    def __init__(self, nest):
+    def __init__(self, nest,larva_value,ant_value):
         self.nest = nest
         self.role = "queen"
         self.image = pygame.transform.scale(pygame.image.load("queen.png"), (30, 60)) # Image de la reine
@@ -34,8 +33,9 @@ class Queen():
         self.position = (nest.x + nest.width // 2, nest.y + nest.height // 2) #position de la reine (fixe)
         self.rect.center = self.position
 # ----------------------------------------- Attribut spawn larve ------------------------------------------
-        self.spawn_interval = 500  # Interval de spawn en secondes (ajustez selon vos besoins)
+        self.spawn_interval = (larva_value*200) # Interval de spawn en secondes (ajustez selon vos besoins)
         self.spawn_timer = self.spawn_interval
+        self.ant_value = ant_value
 # --------------------------------------------------------------------------------------------------------------
     def update(self):
         """
@@ -68,7 +68,7 @@ class Queen():
                 larva = Larva(self.nest)
                 larva.rect.topleft = (new_x, new_y)
                 larva_key = f'larve{counter_larva}'
-                larva_dict[larva_key] = (larva, 1000, new_x, new_y)
+                larva_dict[larva_key] = (larva, (self.ant_value)*200, new_x, new_y)
                 counter_larva += 1
                 break
 
