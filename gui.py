@@ -1,8 +1,8 @@
 import pygame
 import random
 import sys
-from colony_simulation import Queen, Nest, ColonySimulation, larva_dict, classes, Worker, Soldier, Explorer, Male, ChildcareWorker, Farmer, Slaver, ant_dict
-
+from colony_simulation import Nest, ColonySimulation
+from Ant import Queen, larva_dict,classes,Worker,Soldier,Explorer,Male,ChildcareWorker,Farmer,Slaver,ant_dict
 # Initialisation de Pygame
 pygame.init()
 # ----------------------------------------- Paramètres de la fenêtre ------------------------------------------
@@ -14,14 +14,13 @@ pygame.display.set_caption("Simulation de colonie de fourmis")
 button_color = (0, 128, 0)
 button_rect = pygame.Rect((WINDOW_WIDTH//2)-50, WINDOW_HEIGHT-50, 100, 50)
 #--------------------------------------------------------------------------------------------------------------
-
 # Instanciez la classe Nest pour créer le nid
 nest = Nest(150, 50, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 100)  # Exemple de position et de dimensions
 # Instanciez la classe ColonySimulation pour gérer la simulation
 simulation = ColonySimulation(nest, WINDOW_WIDTH - 300, WINDOW_HEIGHT - 100)
 
-queen_image = pygame.image.load("queen.png")
-queen = Queen(nest, queen_image, 30, 60)  # Où "queen.png" est le chemin de l'image de la reine
+
+queen = Queen(nest)  # Où "queen.png" est le chemin de l'image de la reine
 
 # ----------------------------------------- Boucle principale de jeu ------------------------------------------
 running = True
@@ -51,6 +50,7 @@ while running:
         del larva_dict[larva_key]
     for ant_key, (ant, value) in ant_dict.items() :
         ant.draw(window)
+
 
 
 
