@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import random
 counter_food = 0
@@ -22,6 +24,7 @@ class Ant():
         POST: - Permet après X secondes, lancer la fonction spawn_larva()
         """
         self.move_timer -= 1
+
 
 
 class Queen():
@@ -84,7 +87,7 @@ class Larva():
     def draw(self, window):
         window.blit(self.image, self.rect)
 
-    def update(self):
+    def updateL(self):
         larvae_to_remove = []  # Liste pour stocker les clés des larves à supprimer
         for larva_key, (larva, value, x,y) in list(larva_dict.items()):
             if value == 0:
@@ -93,6 +96,7 @@ class Larva():
                 value -= 1
                 larva_dict[larva_key] = (larva, value,x,y)
         return larvae_to_remove
+
     def spawn_ant(self):
         global compteur
         global counter_ant
@@ -108,11 +112,21 @@ class Larva():
         new_x = (larva_dict['larve'+str(compteur)][2])-10
         new_y = larva_dict['larve'+str(compteur)][3]-20
         compteur +=1
+        food = 500
         ant = selected_class(self.nest, image, ant_width, ant_height)
         ant.rect.topleft = (new_x, new_y)
         ant_key = f'ant{counter_ant}'
-        ant_dict[ant_key] = (ant, 10000,new_x,new_y)
+        ant_dict[ant_key] = (ant, 10000,new_x,new_y,food)
         counter_ant += 1
+    def updateF(self):
+        ant_to_remove = []  # Liste pour stocker les clés fourmis à supprimer
+        for ant_key, (ant, value, x, y,food) in list(ant_dict.items()):
+            if food == 0:
+                ant_to_remove.append(ant_key)  # Ajouter la clé à la liste des fourmis à supprimer
+            else:
+                food = food - 1
+                ant_dict[ant_key] = (ant, value, x, y,food)
+        return ant_to_remove
 
 class Worker(Ant):
     def __init__(self, nest, worker_image, width, height):

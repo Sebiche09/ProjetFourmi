@@ -92,15 +92,17 @@ def Simulation(larva_value,food_value,ant_value):
         queen.draw(window)
         queen.update()
         larvae_to_remove = []
+        ant_to_remove =[]
         for larva_key, (larva, value,x,y) in larva_dict.items():
-            larvae_to_remove = larva.update()
+            larvae_to_remove = larva.updateL()
             larva.draw(window)
         for larva_key in larvae_to_remove:
             larva.spawn_ant()
             del larva_dict[larva_key]
 
-        for ant_key, (ant, value,new_x,new_y) in ant_dict.items() :
+        for ant_key, (ant, value,new_x,new_y,food) in ant_dict.items():
             print(ant.move_timer)
+            ant_to_remove = larva.updateF()
             x = new_x + random.randint(-10,10)
             y = new_y + random.randint(-10, 10)
             if x < nest.x+20 or x > nest.x+nest.width-20:
@@ -108,8 +110,13 @@ def Simulation(larva_value,food_value,ant_value):
             if y < nest.y+20 or y > nest.y+nest.height-20:
                 y = new_y
             ant.rect.topleft = (x, y)
-            ant_dict[ant_key] = (ant,value,x,y)
+            ant_dict[ant_key] = (ant,value,x,y,food)
             ant.draw(window)
+            print(food)
+
+        for ant_key in ant_to_remove:
+            del ant_dict[ant_key]
+
 
         #-------------------------------------------- Gestion du temps --------------------------------------------
         # Obtenez le temps écoulé en secondes
