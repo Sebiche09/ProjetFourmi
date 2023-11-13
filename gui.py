@@ -30,7 +30,7 @@ def draw_text(text, font, color, surface, x, y):
     surface.blit(textobj, textrect)
 def main_menu():
     window.fill((119,136,153))
-    pygame.draw.rect(window, (25,25,112), pygame.Rect((WINDOW_WIDTH//2)-275, 350, (WINDOW_HEIGHT//2)-75, 775),border_radius=20)
+    pygame.draw.rect(window, (25,25,112), pygame.Rect((WINDOW_WIDTH//2)-280,(WINDOW_HEIGHT//2)-225 , (WINDOW_HEIGHT//2)+75, WINDOW_HEIGHT-225),border_radius=20)
     draw_text('Menu Principal', font, (255, 255, 255), window, (WINDOW_WIDTH // 2) - 150, WINDOW_HEIGHT // 2 - 200)
     draw_text('Larves', pygame.font.SysFont(None, 30), (255, 255, 255), window, (WINDOW_WIDTH // 2)-270, WINDOW_HEIGHT // 2 - 125)
     draw_text('Nourritures', pygame.font.SysFont(None, 30), (255, 255, 255), window, (WINDOW_WIDTH // 2) - 270,WINDOW_HEIGHT // 2 - 75)
@@ -40,7 +40,7 @@ def main_menu():
     slider_larva = Slider(window, (WINDOW_WIDTH // 2) - 145, WINDOW_HEIGHT // 2 -125, 275, 20, min=1, max=20, step=1)
     slider_food = Slider(window, (WINDOW_WIDTH // 2) - 145, WINDOW_HEIGHT // 2 - 75, 275, 20, min=1, max=20, step=1)
     slider_ant = Slider(window, (WINDOW_WIDTH // 2) - 145, WINDOW_HEIGHT // 2 - 25, 275, 20, min=1, max=20, step=1)
-    output_larva = TextBox(window, (WINDOW_WIDTH // 2) + 145, 435, 70, 50, fontSize=30, borderColour=(0, 0, 0), radius=10, textColour=(0, 0, 0))
+    output_larva = TextBox(window, (WINDOW_WIDTH // 2) + 145, (WINDOW_HEIGHT // 2)-140, 70, 50, fontSize=30, borderColour=(0, 0, 0), radius=10, textColour=(0, 0, 0))
     output_food = TextBox(window, (WINDOW_WIDTH // 2) + 145, WINDOW_HEIGHT // 2 - 90, 70, 50, fontSize=30, borderColour=(0, 0, 0), radius=10, textColour=(0, 0, 0))
     output_ant = TextBox(window, (WINDOW_WIDTH // 2) + 145, WINDOW_HEIGHT // 2 - 40, 70, 50, fontSize=30,borderColour=(0, 0, 0), radius=10, textColour=(0, 0, 0))
     output_larva.disable()
@@ -99,9 +99,7 @@ def Simulation(larva_value,food_value,ant_value):
         for larva_key in larvae_to_remove:
             larva.spawn_ant()
             del larva_dict[larva_key]
-
-        for ant_key, (ant, value,new_x,new_y,food) in ant_dict.items():
-            print(ant.move_timer)
+        for ant_key, (ant, food,new_x,new_y) in ant_dict.items():
             ant_to_remove = larva.updateF()
             x = new_x + random.randint(-10,10)
             y = new_y + random.randint(-10, 10)
@@ -110,11 +108,10 @@ def Simulation(larva_value,food_value,ant_value):
             if y < nest.y+20 or y > nest.y+nest.height-20:
                 y = new_y
             ant.rect.topleft = (x, y)
-            ant_dict[ant_key] = (ant,value,x,y,food)
+            ant_dict[ant_key] = (ant,food,x,y)
             ant.draw(window)
-            print(food)
-
         for ant_key in ant_to_remove:
+            print(ant_to_remove)
             del ant_dict[ant_key]
 
 

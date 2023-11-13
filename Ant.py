@@ -24,9 +24,6 @@ class Ant():
         POST: - Permet après X secondes, lancer la fonction spawn_larva()
         """
         self.move_timer -= 1
-
-
-
 class Queen():
     def __init__(self, nest,larva_value,ant_value):
         self.nest = nest
@@ -74,7 +71,6 @@ class Queen():
                 larva_dict[larva_key] = (larva, (self.ant_value)*200, new_x, new_y)
                 counter_larva += 1
                 break
-
 class Larva():
     def __init__(self, nest):
         self.position = (nest.x + random.randint(325,375), nest.y + random.randint(275,300))
@@ -83,10 +79,8 @@ class Larva():
         self.rect = self.image.get_rect()
         self.rect.center = self.position
         self.nest = nest
-
     def draw(self, window):
         window.blit(self.image, self.rect)
-
     def updateL(self):
         larvae_to_remove = []  # Liste pour stocker les clés des larves à supprimer
         for larva_key, (larva, value, x,y) in list(larva_dict.items()):
@@ -96,7 +90,6 @@ class Larva():
                 value -= 1
                 larva_dict[larva_key] = (larva, value,x,y)
         return larvae_to_remove
-
     def spawn_ant(self):
         global compteur
         global counter_ant
@@ -116,18 +109,18 @@ class Larva():
         ant = selected_class(self.nest, image, ant_width, ant_height)
         ant.rect.topleft = (new_x, new_y)
         ant_key = f'ant{counter_ant}'
-        ant_dict[ant_key] = (ant, 10000,new_x,new_y,food)
+        ant_dict[ant_key] = (ant, food,new_x,new_y)
         counter_ant += 1
     def updateF(self):
         ant_to_remove = []  # Liste pour stocker les clés fourmis à supprimer
-        for ant_key, (ant, value, x, y,food) in list(ant_dict.items()):
+        for ant_key, (ant, food, x, y) in list(ant_dict.items()):
+            print(food)
             if food == 0:
                 ant_to_remove.append(ant_key)  # Ajouter la clé à la liste des fourmis à supprimer
             else:
-                food = food - 1
-                ant_dict[ant_key] = (ant, value, x, y,food)
+                food -= 1
+                ant_dict[ant_key] = (ant, food, x, y)
         return ant_to_remove
-
 class Worker(Ant):
     def __init__(self, nest, worker_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -139,7 +132,6 @@ class Worker(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class Soldier(Ant):
     def __init__(self, nest, soldier_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -151,7 +143,6 @@ class Soldier(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class Explorer(Ant):
     def __init__(self, nest, explorer_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -163,7 +154,6 @@ class Explorer(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class Male(Ant):
     def __init__(self, nest, male_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -175,7 +165,6 @@ class Male(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class ChildcareWorker(Ant):
     def __init__(self, nest, childcare_worker_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -187,7 +176,6 @@ class ChildcareWorker(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class Farmer(Ant):
     def __init__(self, nest, farmer_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
@@ -199,7 +187,6 @@ class Farmer(Ant):
     def draw(self, window):
         # Dessinez l'image de la reine sur la fenêtre Pygame
         window.blit(self.image, self.rect)
-
 class Slaver(Ant):
     def __init__(self, nest, slaver_image, width, height):
         super().__init__(nest.x + random.randint(5,695), nest.y + random.randint(5,595))
